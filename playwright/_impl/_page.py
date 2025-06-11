@@ -1144,6 +1144,9 @@ class Page(ChannelOwner):
             await async_writefile(path, decoded_binary)
         return decoded_binary
 
+    async def snapshot_for_ai(self) -> str:
+        return await self._channel.send("snapshotForAI")
+
     def _force_video(self) -> Video:
         if not self._video:
             self._video = Video(self)

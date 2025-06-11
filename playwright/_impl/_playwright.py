@@ -17,7 +17,7 @@ from typing import Dict
 from playwright._impl._browser_type import BrowserType
 from playwright._impl._connection import ChannelOwner, from_channel
 from playwright._impl._fetch import APIRequest
-from playwright._impl._selectors import Selectors, SelectorsOwner
+from playwright._impl._selectors import Selectors
 
 
 class Playwright(ChannelOwner):
@@ -41,12 +41,13 @@ class Playwright(ChannelOwner):
         self.webkit._playwright = self
 
         self.selectors = Selectors(self._loop, self._dispatcher_fiber)
-        selectors_owner: SelectorsOwner = from_channel(initializer["selectors"])
-        self.selectors._add_channel(selectors_owner)
+        # NOTE: https://github.com/microsoft/playwright/commit/92d4ce30c6efd251f5c353e8eda3f493d27fa4f2
+        # selectors_owner: SelectorsOwner = from_channel(initializer["selectors"])
+        # self.selectors._add_channel(selectors_owner)
 
-        self._connection.on(
-            "close", lambda: self.selectors._remove_channel(selectors_owner)
-        )
+        # self._connection.on(
+        #     "close", lambda: self.selectors._remove_channel(selectors_owner)
+        # )
         self.devices = self._connection.local_utils.devices
 
     def __getitem__(self, value: str) -> "BrowserType":
@@ -58,11 +59,11 @@ class Playwright(ChannelOwner):
             return self.webkit
         raise ValueError("Invalid browser " + value)
 
-    def _set_selectors(self, selectors: Selectors) -> None:
-        selectors_owner = from_channel(self._initializer["selectors"])
-        self.selectors._remove_channel(selectors_owner)
-        self.selectors = selectors
-        self.selectors._add_channel(selectors_owner)
+    # def _set_selectors(self, selectors: Selectors) -> None:
+    #     selectors_owner = from_channel(self._initializer["selectors"])
+    #     self.selectors._remove_channel(selectors_owner)
+    #     self.selectors = selectors
+    #     self.selectors._add_channel(selectors_owner)
 
     async def stop(self) -> None:
         pass

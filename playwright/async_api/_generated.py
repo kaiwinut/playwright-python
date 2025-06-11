@@ -11631,6 +11631,9 @@ class Page(AsyncContextManager):
             )
         )
 
+    async def snapshot_for_ai(self) -> str:
+        return mapping.from_maybe_impl(await self._impl_obj.snapshot_for_ai())
+
     def expect_event(
         self,
         event: str,

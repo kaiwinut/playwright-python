@@ -11721,6 +11721,9 @@ class Page(SyncContextManager):
             )
         )
 
+    def snapshot_for_ai(self) -> str:
+        return mapping.from_maybe_impl(self._sync(self._impl_obj.snapshot_for_ai()))
+
     def expect_event(
         self,
         event: str,
